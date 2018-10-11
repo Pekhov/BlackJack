@@ -5,4 +5,6 @@ class Bank
     @amount = 100
     @player = player
   end
+
+
 end

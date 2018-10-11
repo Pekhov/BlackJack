@@ -1,25 +1,36 @@
 require_relative 'user'
 require_relative 'dealer'
 require_relative 'bank'
+require_relative 'deck'
 
 class BlackJack
+
   def initialize
-    @user = join_player
+    @user = User.new(user_name)
     @dealer = Dealer.new("Dealer")
-    @user_bank = Bank.new(@user)
-    @dealer_bank = Bank.new(@dealer)
+    @user.bank = Bank.new(@user)
+    @dealer.bank = Bank.new(@dealer)
+    @user.cards = first_cards
+    @dealer.cards = first_cards
     start_game
   end
 
   protected
 
-  def join_player
-    print "Добро пожаловать в игру BlackJack!\nВведите ваше имя: "
-    user_name = gets.chomp.to_s
-    User.new(user_name)
+  def user_name
+    print "Введите ваше имя: "
+    gets.chomp.to_s
   end
 
-  def start_game; end
+  def first_cards
+    Deck.random_card(2)
+  end
+
+  def start_game
+    puts "Добро пожаловать в игру BlackJack!"
+
+  end
+
 end
 
 BlackJack.new
