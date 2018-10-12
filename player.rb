@@ -2,15 +2,13 @@ require_relative('deck')
 
 class Player
   attr_reader :name
-  attr_accessor :cards, :cash
+  attr_accessor :cards, :bank
 
   def initialize(name)
     @name = name
     @cards = []
-    @cash = 0
+    @bank = 0
   end
-
-  def
 
   def card_sum
     values = []
