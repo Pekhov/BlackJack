@@ -6,15 +6,17 @@ class Bank
   end
 
   @bank = 0
+  START_AMOUNT = 100
+  SINGLE_BET = 10
 
   def initialize(player)
-    @amount = 100
+    @amount = START_AMOUNT
     @player = player
   end
 
   def place_bet
-    self.class.bank += 10
-    self.amount -= 10
+    self.class.bank += SINGLE_BET
+    self.amount -= SINGLE_BET
   end
 
   def money_to_winner
@@ -23,7 +25,7 @@ class Bank
   end
 
   def return_money
-    self.amount += 10
+    self.amount += SINGLE_BET
     self.class.bank = 0
   end
 
