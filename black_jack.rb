@@ -2,29 +2,26 @@ require_relative 'user'
 require_relative 'dealer'
 require_relative 'bank'
 require_relative 'deck'
+require_relative 'interface'
 
 class BlackJack
 
   def initialize
-    @user = User.new(user_name)
-    @dealer = Dealer.new("Dealer")
+    @ui = Interface.new
+    @user = Player.new(@ui.get_user_name)
+    @dealer = Player.new("Dealer")
     @user.bank = Bank.new(@user)
     @dealer.bank = Bank.new(@dealer)
+    @ui.welcome_message
     new_game_initialize
   end
 
   protected
 
   def new_game_initialize
-    puts "Добро пожаловать в игру BlackJack!\n"
     @user.cards = first_cards
     @dealer.cards = first_cards
     start_game
-  end
-
-  def user_name
-    print "Введите ваше имя: "
-    gets.chomp.to_s
   end
 
   def first_cards
@@ -40,15 +37,11 @@ class BlackJack
   def start_bet
     @user.bank.place_bet
     @dealer.bank.place_bet
-    puts "Сделали ставки в 10$. На вашем счету #{@user.bank.amount}$. У дилера: #{@dealer.bank.amount}$"
+    @ui.bet_message(@user.bank.amount, @dealer.bank.amount)
   end
 
   def user_move
-    puts "\nУ вас на руках карты: #{@user.cards.join(' ')}, с суммой очков #{@user.card_sum}"
-    puts "У дилера на руках карты: #{@dealer.cards.map { |card| '*' }.join(' ')}"
-    puts "Введите 1, что бы открыть карты"
-    puts "Введите 2, что бы пропустить ход"
-    puts "Введите 3, что бы добавить карту" if @user.cards.size == 2
+    @ui.user_move_menu(@user.cards.join(' '), @user.card_sum, @dealer.cards.map { |card| '*' }.join(' '), @user.cards.size == 2 ? true : false)
     case gets.chomp.to_i
     when 1
       open_cards
@@ -61,7 +54,7 @@ class BlackJack
   end
 
   def add_card(user)
-    user.cards << Deck.random_card(1).join.to_sym
+    user.cards << Deck.random_card(1).join
   end
 
   def dealer_move
@@ -74,19 +67,14 @@ class BlackJack
   end
 
   def open_cards
-    puts "\nУ вас на руках карты: #{@user.cards.join(' ')}, с суммой очков #{@user.card_sum}"
-    puts "У дилера на руках карты: #{@dealer.cards.join(' ')}, с суммой очков #{@dealer.card_sum}\n"
+    @ui.show_cards(@user.cards.join(' '), @user.card_sum, @dealer.cards.join(' '), @dealer.card_sum)
+    @ui.show_game_result(winner, @user.name, @dealer.name)
     case winner
-    when :nobody
-      puts "Оба игрока набрали больше 21 очка"
     when :draw
-      puts "Ничья"
       return_money(@user, @dealer)
     when :user
-      puts "Победил #{@user.name}"
       @user.bank.money_to_winner
     when :dealer
-      puts "Победил #{@dealer.name}"
       @dealer.bank.money_to_winner
     end
     check_pleer_bank
@@ -115,8 +103,8 @@ class BlackJack
   end
 
   def try_again?
-    puts "\nВведите 1, что бы сыграть заново\nВведите 2 для выхода"
-    if gets.chomp.to_i == 1
+    answer = @ui.try_again_menu
+    if answer == 1
       new_game_initialize
     else
       exit
@@ -125,10 +113,10 @@ class BlackJack
 
   def check_pleer_bank
     if @user.bank.amount < 10
-      puts "На вашем счете #{@user.bank.amount}$. Этого недостаточно для игры, прощайте;)"
+      @ui.dealer_win(@user.bank.amount)
       exit
     elsif @dealer.bank.amount < 10
-      puts "У дилера на счете #{@dealer.bank.amount}$. Поздравляем, вы выйграли!"
+      @ui.user_win(@dealer.bank.amount)
       exit
     end
   end

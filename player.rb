@@ -13,7 +13,7 @@ class Player
   def card_sum
     values = []
     @cards.sort.each do |card| # сортировка, что бы тузы были последними
-      values << if Deck.deck_of_cards[card] == 11 && values.sum > 10
+      values << if card.include?('Т') && values.sum > 10
                   1
                 else
                   Deck.deck_of_cards[card]
