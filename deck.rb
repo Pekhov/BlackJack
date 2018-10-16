@@ -1,21 +1,32 @@
-class Deck
+require_relative 'cards'
 
-  suit = ['♣', '♥', '♦', '♠']
-  values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'В', 'Д', 'К', 'Т']
-  @deck_of_cards = {}
-  suit.each do |suit|
-    values.each do |value|
-      @deck_of_cards["#{value}#{suit}"] = 10
-      @deck_of_cards["#{value}#{suit}"] = value if value.is_a?(Integer)
-    end
+class Deck
+  attr_reader :deck
+
+  def initialize
+    @deck = create_deck
   end
 
-  class << self
-    attr_reader :deck_of_cards
-
-    def random_card(count)
-      @deck_of_cards.keys.sample(count)
+  def create_deck
+    deck = []
+    suit = Cards::SUIT
+    values = Cards::VALUES
+    suit.each do |suit|
+      values.each do |value|
+        deck << Cards.new(value, suit)
+      end
     end
+    return deck.shuffle
+  end
+
+  def get_card(number = 1)
+    cards = @deck.first(number)
+    @deck -= cards
+    return cards
+  end
+
+  def get_start_cards
+    get_card(2)
   end
 
 end

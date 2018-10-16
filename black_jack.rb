@@ -1,30 +1,32 @@
 require_relative 'bank'
 require_relative 'player'
+require_relative 'dealer'
 require_relative 'deck'
 require_relative 'interface'
 
 class BlackJack
 
+  attr_reader :deck
+
   def initialize
     @ui = Interface.new
     @user = Player.new(@ui.get_user_name)
-    @dealer = Player.new("Dealer")
+    @dealer = Dealer.new("Dealer")
     @user.bank = Bank.new(@user)
     @dealer.bank = Bank.new(@dealer)
     @ui.welcome_message
     new_game_initialize
   end
 
-  protected
-
   def new_game_initialize
-    @user.cards = first_cards
-    @dealer.cards = first_cards
+    @deck = Deck.new
+    if @user.cards
+      @user.return_cards
+      @dealer.return_cards
+    end
+    @user.take_card(@deck.get_start_cards)
+    @dealer.take_card(@deck.get_start_cards)
     start_game
-  end
-
-  def first_cards
-    Deck.random_card(2)
   end
 
   def start_game
@@ -40,25 +42,16 @@ class BlackJack
   end
 
   def user_move
-    @ui.user_move_menu(@user.cards.join(' '), @user.card_sum, @dealer.cards.map { |card| '*' }.join(' '), @user.cards.size == 2 ? true : false)
-    case gets.chomp.to_i
+    answer = @ui.user_move_menu(@user.player_cards, @user.card_sum, @dealer.cards.map { |card| '*' }.join(' '), @user.cards.size == 2 ? true : false)
+    case answer
     when 1
       open_cards
     when 2
-      dealer_move
+      @dealer.dealer_move(self)
     when 3
-      add_card(@user)
-      dealer_move
+      @user.take_card(@deck.get_card)
+      @dealer.dealer_move(self)
     end
-  end
-
-  def add_card(user)
-    user.cards << Deck.random_card(1).join
-  end
-
-  def dealer_move
-    add_card(@dealer) if @dealer.card_sum < 17 && @dealer.cards.size == 2
-    check_cards_count ? open_cards : user_move
   end
 
   def check_cards_count
@@ -66,7 +59,7 @@ class BlackJack
   end
 
   def open_cards
-    @ui.show_cards(@user.cards.join(' '), @user.card_sum, @dealer.cards.join(' '), @dealer.card_sum)
+    @ui.show_cards(@user.player_cards, @user.card_sum, @dealer.player_cards, @dealer.card_sum)
     @ui.show_game_result(winner, @user.name, @dealer.name)
     case winner
     when :draw

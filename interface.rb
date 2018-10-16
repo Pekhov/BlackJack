@@ -19,6 +19,7 @@ class Interface
     puts "Введите 1, что бы открыть карты"
     puts "Введите 2, что бы пропустить ход"
     puts "Введите 3, что бы добавить карту" if add_card
+    gets.chomp.to_i
   end
 
   def show_cards(user_cards, user_sum, dealer_cards, dealer_sum)
@@ -29,7 +30,7 @@ class Interface
   def show_game_result(winner, user_name, dealer_name)
     case winner
     when :nobody
-      puts "Оба игрока набрали больше 21 очка"
+      puts "Оба игрока набрали больше 21 очка. Ставка в 10$ не возвращается."
     when :draw
       puts "Ничья"
     when :user
