@@ -42,16 +42,25 @@ class BlackJack
   end
 
   def user_move
-    answer = @ui.user_move_menu(@user.player_cards, @user.card_sum, @dealer.cards.map { |card| '*' }.join(' '), @user.cards.size == 2 ? true : false)
+    answer = @ui.user_move_menu(@user.player_cards, @user.card_sum, @dealer.hide_cards, @user.two_cards?)
     case answer
     when 1
       open_cards
     when 2
-      @dealer.dealer_move(self)
+      dealer_move
     when 3
       @user.take_card(@deck.get_card)
-      @dealer.dealer_move(self)
+      dealer_move
     end
+  end
+
+  def dealer_move
+    @dealer.take_card(@deck.get_card) if @dealer.take_card?
+    next_move?
+  end
+
+  def next_move?
+    check_cards_count ? open_cards : user_move
   end
 
   def check_cards_count

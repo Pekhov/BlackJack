@@ -1,5 +1,5 @@
 require_relative('deck')
-require_relative('cards')
+require_relative('card')
 
 class Player
   attr_reader :name
@@ -28,7 +28,7 @@ class Player
 
   def card_sum
     values = []
-    @cards.each do |card|
+    sort_cards.each do |card|
       values << if pictures.include?(card.value)
                   10
                 elsif card.value == 'Т' && values.sum > 10
@@ -40,6 +40,21 @@ class Player
                 end
     end
     values.sum
+  end
+
+  def sort_cards
+    aces = []
+    @cards.map do |card|
+      if card.value == 'Т'
+        aces << card
+      end
+    end
+    @cards -= aces
+    @cards.push(aces).flatten!
+  end
+
+  def two_cards?
+    self.cards.size == 2
   end
 
   def pictures

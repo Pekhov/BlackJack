@@ -1,4 +1,4 @@
-require_relative 'cards'
+require_relative 'card'
 
 class Deck
   attr_reader :deck
@@ -9,14 +9,12 @@ class Deck
 
   def create_deck
     deck = []
-    suit = Cards::SUIT
-    values = Cards::VALUES
-    suit.each do |suit|
-      values.each do |value|
-        deck << Cards.new(value, suit)
+    Card::SUIT.each do |suit|
+      Card::VALUES.each do |value|
+        deck << Card.new(value, suit)
       end
     end
-    return deck.shuffle
+    deck.shuffle
   end
 
   def get_card(number = 1)
