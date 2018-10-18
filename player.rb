@@ -27,31 +27,39 @@ class Player
   end
 
   def card_sum
-    values = []
-    sort_cards.each do |card|
-      values << if pictures.include?(card.value)
-                  10
-                elsif card.value == 'Т' && values.sum > 10
-                  1
-                elsif card.value == 'Т' && values.sum <= 10
-                  11
-                else
-                  card.value
-                end
+    values = assign_values
+    values.each do |value|
+      if values.sum < 21 && value == 1
+        values[values.index(value)] = 11 if values.sum + 10 < 22
+      end
     end
     values.sum
   end
 
-  def sort_cards
-    aces = []
-    @cards.map do |card|
-      if card.value == 'Т'
-        aces << card
-      end
+  def assign_values
+    values = []
+    cards.each do |card|
+      values << if pictures.include?(card.value)
+                  10
+                elsif card.value == 'Т'
+                  1
+                else
+                  card.value
+                end
     end
-    @cards -= aces
-    @cards.push(aces).flatten!
+    values
   end
+
+  # def sort_cards
+  #   aces = []
+  #   @cards.map do |card|
+  #     if card.value == 'Т'
+  #       aces << card
+  #     end
+  #   end
+  #   @cards -= aces
+  #   @cards.push(aces).flatten!
+  # end
 
   def two_cards?
     self.cards.size == 2

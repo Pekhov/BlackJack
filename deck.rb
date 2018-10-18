@@ -18,9 +18,7 @@ class Deck
   end
 
   def get_card(number = 1)
-    cards = @deck.first(number)
-    @deck -= cards
-    return cards
+    @deck.shift(number)
   end
 
   def get_start_cards

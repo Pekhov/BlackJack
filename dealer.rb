@@ -7,7 +7,7 @@ class Dealer < Player
   end
 
   def hide_cards
-    self.cards.map { |card| '*' }.join(' ')
+    cards.map { '*' }.join(' ')
   end
 
 end

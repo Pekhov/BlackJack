@@ -19,14 +19,16 @@ class BlackJack
   end
 
   def new_game_initialize
-    @deck = Deck.new
-    if @user.cards
-      @user.return_cards
-      @dealer.return_cards
+    loop do
+      @deck = Deck.new
+      if @user.cards
+        @user.return_cards
+        @dealer.return_cards
+      end
+      @user.take_card(@deck.get_start_cards)
+      @dealer.take_card(@deck.get_start_cards)
+      return unless start_game
     end
-    @user.take_card(@deck.get_start_cards)
-    @dealer.take_card(@deck.get_start_cards)
-    start_game
   end
 
   def start_game
@@ -49,8 +51,12 @@ class BlackJack
     when 2
       dealer_move
     when 3
-      @user.take_card(@deck.get_card)
-      dealer_move
+      if @user.two_cards?
+        @user.take_card(@deck.get_card)
+        dealer_move
+      else
+        exit
+      end
     end
   end
 
@@ -105,11 +111,7 @@ class BlackJack
 
   def try_again?
     answer = @ui.try_again_menu
-    if answer == 1
-      new_game_initialize
-    else
-      exit
-    end
+    answer == 1
   end
 
   def check_pleer_bank
