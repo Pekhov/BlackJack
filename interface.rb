@@ -1,5 +1,4 @@
 class Interface
-
   def welcome_message
     puts "Добро пожаловать в игру BlackJack!\n"
   end
@@ -52,5 +51,4 @@ class Interface
   def user_win(dealer_amount)
     puts "У дилера на счете #{dealer_amount}$. Поздравляем, вы выйграли!"
   end
-
 end

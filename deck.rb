@@ -24,6 +24,5 @@ class Deck
   def get_start_cards
     get_card(2)
   end
-
 end
 

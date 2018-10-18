@@ -28,5 +28,4 @@ class Bank
     self.amount += SINGLE_BET
     self.class.bank = 0
   end
-
 end

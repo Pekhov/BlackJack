@@ -5,7 +5,6 @@ require_relative 'deck'
 require_relative 'interface'
 
 class BlackJack
-
   attr_reader :deck
 
   def initialize
@@ -123,8 +122,6 @@ class BlackJack
       exit
     end
   end
-
-
 end
 
 BlackJack.new

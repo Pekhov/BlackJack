@@ -50,17 +50,6 @@ class Player
     values
   end
 
-  # def sort_cards
-  #   aces = []
-  #   @cards.map do |card|
-  #     if card.value == 'Т'
-  #       aces << card
-  #     end
-  #   end
-  #   @cards -= aces
-  #   @cards.push(aces).flatten!
-  # end
-
   def two_cards?
     self.cards.size == 2
   end
@@ -68,5 +57,4 @@ class Player
   def pictures
     %w[В Д К]
   end
-
 end
